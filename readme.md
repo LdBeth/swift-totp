@@ -6,9 +6,10 @@ _This project is developed without using Xcode, only Command Line Tools
 should be required to build the program. Why? Because Xcode sucks._
 
 ```text
-$ totp -a <account> <secrete>
-$ totp -d <account>
+$ totp -a <account> <secrete> # add acount
+$ totp -d <account> # delete account
 $ totp  # list accounts
+$ totp <account> # generate password
 ```
 
 Passwords are stored in macOS keychain so you can manage it through Keychain.app.
