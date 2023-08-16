@@ -6,7 +6,7 @@ _This project is developed without using Xcode, only Command Line Tools
 should be required to build the program. Why? Because Xcode sucks._
 
 ```text
-$ totp -a <account> <secrete> # add acount
+$ totp -a <account> <secrete> # add account
 $ totp -d <account> # delete account
 $ totp  # list accounts
 $ totp <account> # generate password
@@ -15,6 +15,14 @@ $ totp <account> # generate password
 Passwords are stored in macOS keychain so you can manage it through Keychain.app.
 
 Note that secrete is assumed in base 32 format.
+
+## Security Tips
+
+It is better to ensure the program is quarantined, so it is only
+usable from the terminal emulator. Chances are, someone could
+install a malware on your computer to send the password in
+real time. Another good idea is to disconnect your computer
+from Internet.
 
 ## GPLv3 License
 
