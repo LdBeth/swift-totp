@@ -13,6 +13,8 @@ $ totp  # list accounts
 
 Passwords are stored in macOS keychain so you can manage it through Keychain.app.
 
+Note that secrete is assumed in base 32 format.
+
 ## GPLv3 License
 
 Copyright (C) 2023 by LdBeth
