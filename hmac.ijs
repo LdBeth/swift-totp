@@ -8,7 +8,7 @@ xor =: 22 b.
 and =: 17 b.
 
 hmac_sha1 =: {{
-sha1 =. 1&(128!:6)
+sha1 =. _1&(128!:6)
 
 b_size =. 512 % 8
 
@@ -19,7 +19,7 @@ o_key_pad =. block_sized_key xor b_size $ 16b5c
 i_key_pad =. block_sized_key xor b_size $ 16b36
 
 hashed =. sha1 (i_key_pad { a.), y
-to_bytes upper sha1 a. {~ o_key_pad, to_bytes upper hashed }}
+a. i. sha1 (o_key_pad { a.), hashed }}
 
 NB. Test
 key =: 'key'
