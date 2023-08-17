@@ -99,9 +99,9 @@ do {
         let offset = Int(hash[19] & 0xf)
 
         let binary : UInt64 = (UInt64(hash[offset] & 0x7f) << 24) |
-          (UInt64(hash[offset + 1] & 0xff) << 16) |
-          (UInt64(hash[offset + 2] & 0xff) << 8) |
-          UInt64(hash[offset + 3] & 0xff)
+          (UInt64(hash[offset + 1]) << 16) |
+          (UInt64(hash[offset + 2]) << 8) |
+          UInt64(hash[offset + 3])
 
         let otp = binary % 1000000
 
