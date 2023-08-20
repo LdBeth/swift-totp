@@ -38,6 +38,6 @@ secrete =: 'AB54A98CEB1F0AD2'
 totp =: {{
 h =. x hmac_sha1&:(a. {~ to_bytes&]) y
 offset =. 16bf and {: h
-1000000|(4$256)#. 16b7f 16bff 16bff 16bff and 4 {. offset |. h }}
+1000000|16b7fffffff and (4$256)#. 4 {. offset |. h }}
 
 time totp secrete

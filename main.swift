@@ -105,7 +105,7 @@ do {
 
         let otp = binary % 1000000
 
-        print(otp)
+        print(String(format: "%06d", otp))
     case 3...4:
         if argv[1] == "-d" {
             try rmPass(account: argv[2])
