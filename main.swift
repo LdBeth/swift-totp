@@ -17,9 +17,8 @@
 import Foundation
 
 enum KeychainError: Error {
-    case noPassword
     case unexpectedPasswordData
-    case unhandledError(status: OSStatus)
+    case error(status: OSStatus)
 }
 
 let service = "org.sdf.ldbeth.totp"
@@ -33,8 +32,7 @@ func findPass(account: String) throws -> Data {
     
     var item: CFTypeRef?
     let status = SecItemCopyMatching(query, &item)
-    guard status != errSecItemNotFound else { throw KeychainError.noPassword }
-    guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
+    guard status == errSecSuccess else { throw KeychainError.error(status: status) }
     return item as! Data
 }
 
@@ -45,7 +43,7 @@ func addPass(account: String, secrete: String) throws {
                  kSecAttrService: service] as CFDictionary
     let status = SecItemAdd(query, nil)
     guard status == errSecSuccess else
-  { throw KeychainError.unhandledError(status: status) }
+  { throw KeychainError.error(status: status) }
 }
 
 func rmPass(account: String) throws {
@@ -54,7 +52,7 @@ func rmPass(account: String) throws {
                  kSecAttrService: service] as CFDictionary
     let status = SecItemDelete(query)
     guard status == errSecSuccess || status == errSecItemNotFound else
-  { throw KeychainError.unhandledError(status: status) }
+  { throw KeychainError.error(status: status) }
 }
 
 func queryPass() throws -> [String] {
@@ -64,8 +62,7 @@ func queryPass() throws -> [String] {
                  kSecReturnAttributes: true] as CFDictionary
     var items: CFTypeRef?
     let status = SecItemCopyMatching(query, &items)
-    guard status != errSecItemNotFound else { throw KeychainError.noPassword }
-    guard status == errSecSuccess else { throw KeychainError.unhandledError(status: status) }
+    guard status == errSecSuccess else { throw KeychainError.error(status: status) }
     let array = Array<AnyObject>(_immutableCocoaArray: items as! CFArray)
     return array.compactMap {
         let existingItem = $0 as? [String : Any]
@@ -76,7 +73,6 @@ func queryPass() throws -> [String] {
 let argv = CommandLine.arguments
 let argc = CommandLine.argc
 
-var exitValue = EXIT_SUCCESS
 do {
 
     switch argc {
@@ -117,17 +113,18 @@ do {
         }
     default:
         print("Invalid arguments", to: &stdErr)
-        exitValue = EXIT_FAILURE
+        exit(EXIT_FAILURE)
     }
-} catch KeychainError.noPassword {
-    print("Secrete not found", to: &stdErr)
-    exitValue = EXIT_FAILURE
+} catch KeychainError.error(let status) {
+    let message = SecCopyErrorMessageString(status, nil)
+    print(message ?? "Failed to decode error", to: &stdErr)
+    exit(EXIT_FAILURE)
 } catch KeychainError.unexpectedPasswordData {
     print("Invalid secrete data", to: &stdErr)
-    exitValue = EXIT_FAILURE
+    exit(EXIT_FAILURE)
 } catch {
     print("Unknow error", to: &stdErr)
-    exitValue = EXIT_FAILURE
+    exit(EXIT_FAILURE)
 }
 
-exit(exitValue)
+exit(EXIT_SUCCESS)
