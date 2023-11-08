@@ -106,7 +106,9 @@ do {
         if argv[1] == "-d" {
             try rmPass(account: argv[2])
         } else if ((argv[1] == "-a") && (argc == 4)) {
-            let pass = base32DecodeToData(argv[3])!.hexDescription
+            guard let data = base32DecodeToData(argv[3])
+            else { throw KeychainError.unexpectedPasswordData }
+            let pass = data.hexDescription
             try addPass(account: argv[2], secrete: pass)
         } else {
             fallthrough
