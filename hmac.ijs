@@ -28,7 +28,7 @@ message =: 'The quick brown fox jumps over the lazy dog'
 result1 =: key hmac_sha1 message
 result2 =: to_bytes upper 'de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9'
 
-result1 -: result2 NB. should give 1
+assert result1 -: result2 NB. should give 1
 
 secs_to_key =: (8$2^8) #: 30<.@%~]
 
@@ -36,8 +36,10 @@ time =: '0000000000000001'
 secrete =: 'AB54A98CEB1F0AD2'
 
 totp =: {{
-h =. x hmac_sha1&:(a. {~ to_bytes&]) y
+h =. y hmac_sha1&:(a. {~ to_bytes&]) x
 offset =. 16bf and {: h
 1000000|16b7fffffff and (4$256)#. 4 {. offset |. h }}
 
 time totp secrete
+
+assert 287082 = time totp '3132333435363738393031323334353637383930'
